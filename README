@@ -1,0 +1,58 @@
+
+-----
+1. Install Prereqs:
+
+- python2 (pacman -S python2)
+- python twisted (pacman -S twisted)
+- sudo (pacman -S sudo)
+
+-----
+1. You need to set up ssh to work without a password.
+
+- Create ssh-keys for your user:
+ssh-keygen
+
+- Make these keys authorized to login to this machine:
+cat .ssh/id_rsa.pub >> .ssh/authorized_keys
+
+- Verify that ssh'ing into the machine as works without a password works.
+
+----
+2. Set up Sudo. This is needed because we are not running ssh as root. If you
+are ok with running it as root you could modify the denon_http file to remove
+the 'sudo -u $LOCAL_USER' in from of the ssh command.
+
+---
+3. Copy the various files where they need to go:
+
+rc.d/*       => /etc/rc.d/
+conf.d/*     => /etc/conf.d/
+denon_telnet => /home/<username>/denon_telnet (or a directory of your choice)
+
+---
+4. Modify the settings
+
+- for the http proxy you need to set DENON_IP, LOCAL_PORT, and LOCAL_USER in
+the /etc/conf.d/denon_http file. Note that if you set LOCAL_PORT to anything
+besides 80 most programs that rely on talking to the Denon webserver as well
+as the telnet port will fail.
+
+- for telnet you need to set "remote_ip" in the denon_telnet.py file. I should
+move this to its own config file as well
+
+- you need to set the correct path to the denon_telnet.py file in
+'/etc/rc.d/denon_telnet'
+
+----
+5. Test it out!
+
+You should be able to start the two proxies with:
+/etc/rc.d/denon_telnet start
+/etc/rc.d/denon_http start
+
+If you want these to run on boot modify /etc/rc.conf file to include them in the
+list of daemons.
+
+If you want to debug a Denon telnet program the telnet proxy also opens up a debug
+port on 1357. You can telnet to this port to observe the traffic between the denon
+and your program of interest.

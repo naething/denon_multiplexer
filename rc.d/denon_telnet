@@ -1,0 +1,4 @@
+#!/bin/bash
+
+DAEMON=/<PATH>/<TO>/denon_telnet.py
+$DAEMON $1
